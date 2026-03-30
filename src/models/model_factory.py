@@ -12,7 +12,7 @@ sys.path.append(str(PROJECT_ROOT))
 from src.models.conv_net import ConvNet
 import warnings
 
-from configs.configurations import NetConfig, NetParams, GrokkingTransformerConfig
+from configs.configurations import NetConfig, NetParams, GrokkingTransformerConfig, LlamaConfig
 from typing import Any, Union
 
 
@@ -68,7 +68,7 @@ def _infer_conv_input_dims(params: NetParams):
         )
 
 
-def model_factory(config: Union[NetConfig, GrokkingTransformerConfig]) -> Any:
+def model_factory(config: Union[NetConfig, GrokkingTransformerConfig, LlamaConfig]) -> Any:
     """
     Factory function to create model instances based on the configuration.
 
@@ -101,7 +101,11 @@ def model_factory(config: Union[NetConfig, GrokkingTransformerConfig]) -> Any:
         elif model_type == 'GrokkingTransformer_pytorch_implementation':
             from src.models.grokking_transformer import GrokkingTransformerStandard
             return GrokkingTransformerStandard(**params)
-    
+
+    if model_type == 'llama':
+        from src.models.llama_loader import LlamaLoader
+        return LlamaLoader(config)
+
     # if model_type = 'convnet', return an instance of ConvNet:
     if model_type == 'ConvNet':
         if config.netparams is None:

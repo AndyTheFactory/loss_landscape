@@ -62,6 +62,21 @@ class NetConfig:
 
 
 @dataclass
+class LlamaConfig:
+    """Configuration for loading a HuggingFace LLaMA 3.1 model."""
+    type: str = 'llama'
+    model_name_or_path: str = 'meta-llama/Llama-3.1-8B'
+    hf_token: Optional[str] = None
+    torch_dtype: str = 'bfloat16'  # 'float16', 'float32', 'bfloat16'
+    load_in_8bit: bool = False
+    load_in_4bit: bool = False
+    device_map: Optional[str] = 'auto'
+    trust_remote_code: bool = False
+    class Config:
+        version_base = "1.1"
+
+
+@dataclass
 class GrokkingTransformerConfig:
     _target_: str = "configs.configurations.GrokkingTransformerConfig"
     type: str = "GrokkingTransformer_pytorch_manual_implementation"
@@ -252,7 +267,7 @@ class ExperimentConfig:
     epochs: int = 10
     batch_size: int = 128
     data: DataConfig = field(default_factory=DataConfig)
-    net: Union[NetConfig, GrokkingTransformerConfig] = field(default_factory=lambda: NetConfig(type='ConvNet'))
+    net: Union[NetConfig, GrokkingTransformerConfig, LlamaConfig] = field(default_factory=lambda: NetConfig(type='ConvNet'))
     learner: Union[BackpropConfig, ContinuousBackpropConfig, RRContinuousBackpropConfig] = field(default_factory=BackpropConfig)
     evaluation: Union[EvaluationConfig, None] = field(default_factory=EvaluationConfig)
     track_rank: bool = False
