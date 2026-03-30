@@ -9,3 +9,5 @@ pytest==8.3.4
 scipy
 omegaconf
 pyyaml
+transformers>=4.43.0
+accelerate
